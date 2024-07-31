@@ -2,9 +2,9 @@
 
 This is the official Pytorch implementation of our paper:
 
-> [Model Inversion Attacks through Target-specific Conditional Diffusion Models]()
+> [Model Inversion Attacks through Target-specific Conditional Diffusion Models](https://www.arxiv.org/abs/2407.11424)
 >
->  Ouxiang Li, Yanbin Hao, Zhicai Wang, Shuo Wang, Zaixi Zhang, Xiangnan He
+>  Ouxiang Li, Yanbin Hao, Zhicai Wang, Shuo Wang, Zaixi Zhang, FuliFeng
 
 ![fig1](assets/fig1.jpg)
 
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 
 ## Step-1: Training Target-specific CDM
 
-Here we take VGG16 as the target classifier and CelebA as the public dataset as an example to train the target-specific CDM from scratch.
+Here we take **VGG16** as the target classifier and **CelebA** as the public dataset as an example to train the target-specific CDM from scratch.
 
 ### Pretrain CDM
 
@@ -66,7 +66,7 @@ CUDA_VISIBLE_DEVICES=0,1 mpiexec -n 2 python 1_pretrain/free_train.py \
     --data_dir data/reclassified_public_data/celeba/VGG16_top30
 ```
 
-We pretrain the CDM with batch size $150$ for $50\text{K}$ iterations on two A40 GPUs. Our ablation indicates that extended training iterations (e.g., $100\text{K}$) would lead to better attack performance.
+We pretrain the CDM with batch size $150$ for $50\text{K}$ iterations on two A40 GPUs. Our ablation indicates that extended training iterations (e.g., $100\text{K}$) would lead to better attack performance. The pre-trained checkpoints will be saved at `./1_pretrain/logger`.
 
 ### Fine-tune CDM
 

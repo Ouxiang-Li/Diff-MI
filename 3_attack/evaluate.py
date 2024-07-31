@@ -12,12 +12,11 @@ sys.path.append(os.getcwd())
 from models.classifier import FaceNet
 
 '''
-CUDA_VISIBLE_DEVICES=5 python 3_attack/evaluate.py \
-    --eval_path /data/liox/Diff-MI-local/3_attack/logs_formal/celeba/IR152_231211-200613_30_3.0_1.25_150_k20_A4_5x300_bs64/Diff-MI \
-    --cal_PRCD 
-    
-    --cal_piq --cal_lpips
+CUDA_VISIBLE_DEVICES=0 python 3_attack/evaluate.py \
+    --eval_path {path of recontructed images} \
     --cal_acc --cal_fid --cal_knn \
+    --cal_piq --cal_lpips \
+    --cal_PRCD
 '''
 
 # ====================== Configuration =======================

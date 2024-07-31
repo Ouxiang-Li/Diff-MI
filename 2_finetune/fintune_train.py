@@ -22,11 +22,11 @@ from guided_diffusion.train_util import TrainLoop
 DATASETS: celeba, ffhq, facescrub
 TARGETS: VGG16, IR152, FaceNet64
 
-CUDA_VISIBLE_DEVICES=6 python 2_finetune/fintune_train.py \
+CUDA_VISIBLE_DEVICES=0 python 2_finetune/fintune_train.py \
+    --resume_checkpoint {path of pretrained checkpoit} \
     --batch_size 4 \
     --dataset celeba \
-    --target VGG16 \
-    --epochs 10
+    --target VGG16
 '''
 
 def set_random_seed(seed=0):
@@ -98,7 +98,7 @@ def create_argparser():
         schedule_sampler="uniform",
         lr=2e-4,
         weight_decay=0.0,
-        batch_size=64,
+        batch_size=4,
         use_fp16=False,
         fp16_scale_growth=1e-3,
         resume_checkpoint=None,
@@ -107,7 +107,7 @@ def create_argparser():
         target=None,
         aug_times=2,
         threshold=0.99,
-        epochs=50,
+        epochs=100,
     )
     defaults.update(model_and_diffusion_defaults())
     parser = argparse.ArgumentParser()

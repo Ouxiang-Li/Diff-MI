@@ -25,15 +25,13 @@ sys.path.append(os.getcwd())
 from models.classifier import VGG16, IR152, FaceNet64, FaceNet
 
 '''
-CUDA_VISIBLE_DEVICES=6 python 3_attack/attack.py \
+CUDA_VISIBLE_DEVICES=0 python 3_attack/attack.py \
     --dataset celeba \
-    --target IR152 \
+    --target VGG16 \
     --label_num 300 \
     --repeat_times 5 \
     --batch_size 64 \
-    --steps 0 \
-    --ddim_step 1000 \
-    --path_D 2_finetune/logger_formal/celeba/celeba_IR152/ema_0.9999_050000_14_86.13%.pt
+    --path_D {path of target-specific CDM}
 '''
 
 # region [Configuration]

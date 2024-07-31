@@ -58,6 +58,8 @@ Here we take **VGG16** as the target classifier and **CelebA** as the public dat
 
 ### Pretrain CDM
 
+We pretrain the CDM with batch size $150$ for $50\text{K}$ iterations on two A40 GPUs. Our ablation indicates that extended training iterations (e.g., $100\text{K}$) would lead to better attack performance. The pre-trained checkpoints will be saved at `./1_pretrain/logger/`.
+
 ```
 CUDA_VISIBLE_DEVICES=0,1 mpiexec -n 2 python 1_pretrain/free_train.py \
     --class_cond True \
@@ -66,19 +68,23 @@ CUDA_VISIBLE_DEVICES=0,1 mpiexec -n 2 python 1_pretrain/free_train.py \
     --data_dir data/reclassified_public_data/celeba/VGG16_top30
 ```
 
-We pretrain the CDM with batch size $150$ for $50\text{K}$ iterations on two A40 GPUs. Our ablation indicates that extended training iterations (e.g., $100\text{K}$) would lead to better attack performance. The pre-trained checkpoints will be saved at `./1_pretrain/logger`.
-
 ### Fine-tune CDM
+
+The fine-tuning stage opertates from the pretrained checkpoint. Here we set batch size to $4$ which requires around xx MB memory on a single GPU. Notably, you can trade off the attack accuracy and generative fidelity by adjusting fine-tuning epochs with `--epoch`.
 
 ```
 CUDA_VISIBLE_DEVICES=0 python 2_finetune/fintune_train.py \
-    --batch_size 7 \
+    --batch_size 4 \
     --dataset celeba \
     --target VGG16 \
-    --epochs 10
+    --resume_checkpoint {path of pretrained checkpoint} 
 ```
 
+The fine-tuned checkpoint will be saved at `./2_finetune/logger/`. 
+
 ## Step-2: Iterative Image Reconstruction 
+
+In step-2, you can load the target-specific CDM for attack on any specific target class. Here, we reconstruct 5 images for the first 300 classes.
 
 ```
 CUDA_VISIBLE_DEVICES=0 python 3_attack/attack.py \
@@ -86,7 +92,18 @@ CUDA_VISIBLE_DEVICES=0 python 3_attack/attack.py \
     --target VGG16 \
     --label_num 300 \
     --repeat_times 5 \
-    --path_D 1_pretrain/logger/celeba/top30_VGG16/ema_0.9999_050000.pt
+    --batch_size 64 \
+    --path_D {path of target-specific CDM}
+```
+
+Additionally, we provide an evaluation script `./3_attack/evaluate.py` to evaluate the reconstructions of different MIA methods.
+
+```
+CUDA_VISIBLE_DEVICES=0 python 3_attack/evaluate.py \
+    --eval_path {path of recontructed images} \
+    --cal_acc --cal_fid --cal_knn \
+    --cal_piq --cal_lpips \
+    --cal_PRCD
 ```
 
 # Examples of Reconstructed Images
@@ -94,3 +111,12 @@ CUDA_VISIBLE_DEVICES=0 python 3_attack/attack.py \
 ![fig2](assets/fig2.jpg)
 
 # Citing
+If you find this repository useful for your work, please consider citing it as follows:
+```
+@article{li2024model,
+  title={Model Inversion Attacks Through Target-Specific Conditional Diffusion Models},
+  author={Li, Ouxiang and Hao, Yanbin and Wang, Zhicai and Zhu, Bin and Wang, Shuo and Zhang, Zaixi and Feng, Fuli},
+  journal={arXiv preprint arXiv:2407.11424},
+  year={2024}
+}
+```

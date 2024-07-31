@@ -28,7 +28,7 @@ pip install -r requirements.txt
 
 - Datasets: We use [CelebA](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), [FFHQ](https://drive.google.com/open?id=1tg-Ur7d4vk1T8Bn0pPpUSQPxlPGBlGfv) and [FaceScrub](http://vintage.winklerbros.net/facescrub.html) in our experiments (we use a cleaned version of FaceScrub from this [repo](https://github.com/AI-Machine-Vision-Lab/FPVT_BMVC22-Face-Pyramid-Vision-Transformer)). You can directly download the pre-processed datasets [`reclassified_public_data`](https://drive.google.com/drive/folders/1w5Uj-5nhRPaYImTpiTEZPNQ8wNY_P8Hz?usp=drive_link) after top-n selection.
 
-- We follow [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) to divide the CelebA into private and public data and use the private data of CelebA (the first 300 classes) [`celeba_private_300` ](https://drive.google.com/file/d/1qNo2tHTc8ywjffToC3W7kQyCysaWZWq_/view?usp=drive_link) for evaluation.
+- We follow [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) to divide the CelebA into private and public data and use the private data of CelebA (the first 300 classes) [`celeba_private_300`](https://drive.google.com/file/d/1qNo2tHTc8ywjffToC3W7kQyCysaWZWq_/view?usp=drive_link) for evaluation.
 
 - We pre-compute the regularization features [`p_reg`](https://drive.google.com/drive/folders/1r0-fX7R6REqtBUkC7bNmlzAnpFKCzW2B?usp=drive_link) for $\mathcal{L}_{\text{p-reg}}$.
 

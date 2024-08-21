@@ -1,4 +1,4 @@
-import os, sys, pdb
+import os, pdb
 
 import math, kornia
 import numpy as np
@@ -8,6 +8,7 @@ import torchvision
 import torch.distributed as dist
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
+from torch.utils.data import TensorDataset, DataLoader
 from torch.nn.parallel.distributed import DistributedDataParallel as DDP
 from torch.optim import AdamW
 
@@ -20,6 +21,7 @@ from dpm_solver_pytorch import NoiseScheduleVP, model_wrapper, DPM_Solver
 
 
 class TrainLoop:
+
     def __init__(
         self,
         *,
@@ -28,31 +30,22 @@ class TrainLoop:
         model,
         diffusion,
         batch_size,
-        lr,
+        learning_rate,
         resume_checkpoint=None,
-        data=None,
         use_fp16=False,
         fp16_scale_growth=1e-3,
         schedule_sampler=None,
         weight_decay=0.0,
     ):
-        self.args = args
         self.threshold = args.threshold
         self.epochs = args.epochs
         self.target = target
         self.model = model
         self.diffusion = diffusion
-        self.data = data
         self.batch_size = batch_size
-        self.lr = lr
+        self.lr = learning_rate
+        self.resume_checkpoint = resume_checkpoint
 
-        if resume_checkpoint is not None:
-            self.resume_checkpoint = resume_checkpoint
-        else:
-            self.resume_checkpoint = os.path.join("1_pretrain/logger", 
-                                                  args.dataset, 
-                                                  f"top30_{args.target}",
-                                                  "ema_0.9999_050000.pt")
         self.use_fp16 = use_fp16
         self.fp16_scale_growth = fp16_scale_growth
         self.schedule_sampler = schedule_sampler or UniformSampler(diffusion)
@@ -126,29 +119,27 @@ class TrainLoop:
                 )
         dist_util.sync_params(self.model.parameters())
 
-    def run_cls_only(self):
+    def run_cls_only(self, guidance_scale=3.0, aug_times=2):
 
-        aug_times = self.args.aug_times
         acc, acc_mean, iter = [], 0.0, 0
         labels = th.tensor(np.arange(0, 300)).to(dist_util.dev())
-        label_dataset = th.utils.data.TensorDataset(labels)
+        label_dataset = TensorDataset(labels)
 
         while (acc_mean < self.threshold) and (iter < self.epochs):
 
-            bar = tqdm(th.utils.data.DataLoader(dataset=label_dataset, batch_size=self.batch_size, shuffle=True))
+            bar = tqdm(DataLoader(dataset=label_dataset, batch_size=self.batch_size, shuffle=True))
             for classes in bar:
                 bs = classes[0].shape[0]
-                bar.set_description(f'Iter {iter}')
+                bar.set_description(f'Epoch {iter}')
                 self.mp_trainer_cls.zero_grad()
                 model_fn = model_wrapper(
                     self.model,
                     self.noise_schedule,
                     model_type="noise",
-                    model_kwargs={},
                     guidance_type="classifier-free",
                     condition=classes[0],
                     unconditional_condition=th.ones_like(classes[0])*1000,
-                    guidance_scale=3.0)
+                    guidance_scale=guidance_scale)
                 dpm_solver = DPM_Solver(model_fn, self.noise_schedule, algorithm_type="dpmsolver++")
 
                 x_T = th.randn((bs, 3, 64, 64)).to(dist_util.dev())
@@ -168,7 +159,7 @@ class TrainLoop:
                     img_input_batch.append(img_input)
                 img_input_batch = th.cat(img_input_batch)
 
-                feats, logits = self.target((img_input_batch+1)/2)
+                feats, logits = self.target((img_input_batch + 1) / 2)
                 loss1 = self.topk_loss(logits, classes[0].repeat(len(x0_pred_list)*aug_times), k=20)
                 loss2 = 1.0 * self.p_reg_loss(feats, classes[0].repeat(len(x0_pred_list)*aug_times))
                 loss = loss1 + loss2
@@ -176,15 +167,13 @@ class TrainLoop:
                 self.mp_trainer_cls.backward(loss)
                 self.mp_trainer_cls.optimize(self.opt_cls)
 
-                with th.no_grad():
-                    acc.append(th.eq(th.topk(logits[-bs*aug_times:], k=1)[1], classes[0].repeat(aug_times).view(-1,1)).float().mean().item())
+                acc.append(th.eq(th.topk(logits[-bs * aug_times:], k=1)[1], classes[0].repeat(aug_times).view(-1,1)).float().mean().item())
                 bar.set_postfix({'Loss1': loss1.item(), 'Loss2': loss2.item(), 'Loss': loss.item()})
 
+            # Save the fine-tuned model
             with th.no_grad():
                 acc_mean = np.mean(acc)
-                visualize(samples, row=len(x0_pred_list), column=bs, anno=f"{iter}_{acc_mean:.2%}")
                 logger.log(f"The mean acc in iteration {iter} is {acc_mean:.2%}")
-
                 if acc_mean >= (self.threshold - 0.05) or iter == (self.epochs - 1):
                     state_dict = self.mp_trainer_cls.master_params_to_state_dict(self.mp_trainer_cls.model_params)
                     filename = f"{self.resume_checkpoint.split('/')[-1].split('.pt')[0]}_{iter}_{acc_mean:.2%}.pt"
@@ -192,14 +181,12 @@ class TrainLoop:
                         th.save(state_dict, f)
                 acc, iter = [], (iter + 1)
 
-    ###################################################################
-
     def topk_loss(self, out, iden, k):
         assert out.shape[0] == iden.shape[0]
         iden = iden.unsqueeze(1)
         real = out.gather(1, iden).squeeze(1)
         if k == 0: return -1 * real.mean()
-        tmp_out = th.scatter(out, dim=1, index=iden, src=-th.ones_like(iden)*1000.0)
+        tmp_out = th.scatter(out, dim=1, index=iden, src=-th.ones_like(iden) * 1000.0)
         margin = th.topk(tmp_out, k=k)[0]
         return -1 * real.mean() + margin.mean()
     
@@ -207,7 +194,6 @@ class TrainLoop:
         fea_reg = self.p_reg[classes]
         return F.mse_loss(featureT, fea_reg)
     
-    ###################################################################
 
 def get_blob_logdir():
     # You can change this to be a separate path to save checkpoints to
@@ -219,23 +205,3 @@ def find_resume_checkpoint():
     # On your infrastructure, you may want to override this to automatically
     # discover the latest checkpoint on your blob storage, etc.
     return None
-
-
-def visualize(img, row=None, column=None, anno=''):
-
-
-    sample = ((img + 1) * 127.5).clamp(0, 255).to(th.uint8)
-    sample = sample.permute(0, 2, 3, 1)
-    sample = sample.contiguous()
-    arr = np.array([i.cpu().numpy() for i in sample])
-
-    if row == column == None:
-        row = min(int(math.sqrt(len(arr))), 10)
-        column = row
-    for i in range(row*column):
-        plt.subplot(row, column, i+1)
-        plt.imshow(arr[i])
-        plt.xticks([])
-        plt.yticks([])
-    plt.savefig(bf.join(get_blob_logdir(), f"visual_{anno}.png"))
-    plt.close()

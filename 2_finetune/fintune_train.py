@@ -18,16 +18,6 @@ from guided_diffusion.script_util import (
 )
 from guided_diffusion.train_util import TrainLoop
 
-''' 
-DATASETS: celeba, ffhq, facescrub
-TARGETS: VGG16, IR152, FaceNet64
-
-CUDA_VISIBLE_DEVICES=0 python 2_finetune/fintune_train.py \
-    --resume_checkpoint {path of pretrained checkpoit} \
-    --batch_size 4 \
-    --dataset celeba \
-    --target VGG16
-'''
 
 def set_random_seed(seed=0):
     random.seed(seed)
@@ -61,7 +51,7 @@ def main():
         model=model,
         diffusion=diffusion,
         batch_size=args.batch_size,
-        lr=args.lr,
+        learning_rate=args.lr,
         resume_checkpoint=args.resume_checkpoint,
         use_fp16=args.use_fp16,
         fp16_scale_growth=args.fp16_scale_growth,
@@ -83,7 +73,7 @@ def load_target(target_name):
         T = FaceNet64(1000)
         path_T = 'assets/checkpoints/target_model/FaceNet64_88.50.tar'
     else:
-        exit("No specific target_model.")
+        raise ValueError("Unsupported target model: {}".format(target_name))
     logger.log(f"loading target from checkpoint: {path_T}")
     T = torch.nn.DataParallel(T)
     ckp_T = torch.load(path_T)
@@ -105,7 +95,6 @@ def create_argparser():
         # Setting for Target-specific Fine-tuning
         dataset=None,
         target=None,
-        aug_times=2,
         threshold=0.99,
         epochs=100,
     )

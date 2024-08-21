@@ -14,7 +14,7 @@ Install the environment as follows:
 
 ```python
 # create conda environment
-conda create -n Diff-MI python=3.9
+conda create -n Diff-MI -y python=3.9
 conda activate Diff-MI
 # install pytorch 
 pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 --extra-index-url https://download.pytorch.org/whl/cu117
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 
 ## Step-1: Training Target-specific CDM
 
-Here we take **VGG16** as the target classifier and **CelebA** as the public dataset as an example to train the target-specific CDM from scratch.
+We simulate the MIA scenario on three target classifiers `VGG16, IR152, FaceNet64` with three different public datasets `celeba, ffhq, facescrub`. Here we take **VGG16** as the target classifier and **CelebA** as the public dataset as an example to train the target-specific CDM from scratch.
 
 ### Pretrain CDM
 

@@ -13,7 +13,7 @@ from models.classifier import FaceNet
 
 '''
 CUDA_VISIBLE_DEVICES=0 python 3_attack/evaluate.py \
-    --eval_path {path of recontructed images} \
+    --eval_path {Path of recontructed images} \
     --cal_acc --cal_fid --cal_knn \
     --cal_piq --cal_lpips \
     --cal_PRCD

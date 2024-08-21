@@ -17,14 +17,6 @@ from guided_diffusion.script_util import (
 from guided_diffusion.train_util import TrainLoop
 
 
-''' 
-CUDA_VISIBLE_DEVICES=0,1 mpiexec -n 2 python 1_pretrain/free_train.py \
-    --class_cond True \
-    --batch_size 150 \
-    --dataset celeba \
-    --data_dir data/reclassified_public_data/celeba/VGG16_top30
-'''
-
 def main():
     
     args = create_argparser().parse_args()
@@ -37,7 +29,6 @@ def main():
     )
     model.to(dist_util.dev())
     schedule_sampler = create_named_schedule_sampler(args.schedule_sampler, diffusion)
-
 
     logger.log("creating data loader...")
     data = load_data(
@@ -89,7 +80,7 @@ def get_transform(dataset):
         offset_width = (64 - crop_size) // 2
         crop = lambda x: x[:, offset_height:offset_height + crop_size, offset_width:offset_width + crop_size]
     else:
-        print("Wrong Dataset.")
+        raise ValueError("Unsupported dataset: {}".format(dataset))
 
     def _noise_adder(img):
         return torch.empty_like(img, dtype=img.dtype).uniform_(0.0, 1 / 256.0) + img

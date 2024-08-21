@@ -26,7 +26,7 @@ class Mnist_CNN(nn.Module):
         self.fc1 = nn.Linear(500, 50)
         self.fc2 = nn.Linear(50, 5)
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         x = F.relu(F.max_pool2d(self.conv1(x), 2))
         x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
         x = x.view(x.size(0), -1)
@@ -47,7 +47,7 @@ class VGG16(nn.Module):
         self.bn.bias.requires_grad_(False)  # no shift
         self.fc_layer = nn.Linear(self.feat_dim, self.n_classes)
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         feature = self.feature(x)
         feature = feature.view(feature.size(0), -1)
         feature = self.bn(feature)
@@ -76,7 +76,7 @@ class VGG16_vib(nn.Module):
         self.st_layer = nn.Linear(self.feat_dim, self.k * 2)
         self.fc_layer = nn.Linear(self.k, self.n_classes)
 
-    def forward(self, x, mode="train"):
+    def forward(self, x, **kwargs):
         feature = self.feature(x)
         feature = feature.view(feature.size(0), -1)
         statis = self.st_layer(feature)
@@ -136,7 +136,7 @@ class FaceNet(nn.Module):
         out = self.fc_layer(feat)
         return out
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         # print("input shape:", x.shape)
         # import pdb; pdb.set_trace()
 
@@ -160,7 +160,7 @@ class FaceNet64(nn.Module):
 
         self.fc_layer = nn.Linear(self.feat_dim, self.num_classes)
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         feat = self.feature(x)
         feat = self.output_layer(feat)
         feat = feat.view(feat.size(0), -1)
@@ -184,7 +184,7 @@ class IR152(nn.Module):
 
         self.fc_layer = nn.Linear(self.feat_dim, self.num_classes)
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         feat = self.feature(x)
         feat = self.output_layer(feat)
         feat = feat.view(feat.size(0), -1)
@@ -210,7 +210,7 @@ class IR152_vib(nn.Module):
             nn.Linear(self.k, self.n_classes),
             nn.Softmax(dim=1))
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         feature = self.output_layer(self.feature(x))
         feature = feature.view(feature.size(0), -1)
         statis = self.st_layer(feature)
@@ -239,7 +239,7 @@ class VGG16_grey(nn.Module):
         self.bn.bias.requires_grad_(False)  # no shift
         self.fc_layer = nn.Linear(self.feat_dim, self.n_classes)
             
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         feature = self.feature(x)
         feature = feature.view(feature.size(0), -1)
         feature = self.bn(feature)
@@ -256,7 +256,7 @@ class IR18(nn.Module):
         self.num_classes = num_classes
         self.fc_layer = nn.Linear(self.feat_dim, self.num_classes)
         
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         feat = self.feature(x)
         feat = feat.view(feat.size(0), -1)
         out = self.fc_layer(feat)
@@ -273,7 +273,7 @@ class IR18_grey(nn.Module):
         self.num_classes = num_classes
         self.fc_layer = nn.Linear(self.feat_dim, self.num_classes)
         
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         feat = self.feature(x)
         feat = feat.view(feat.size(0), -1)
         out = self.fc_layer(feat)
@@ -289,7 +289,7 @@ class IR34(nn.Module):
         self.num_classes = num_classes
         self.fc_layer = nn.Linear(self.feat_dim, self.num_classes)
         
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         feat = self.feature(x)
         feat = feat.view(feat.size(0), -1)
         out = self.fc_layer(feat)
@@ -306,7 +306,7 @@ class IR34_grey(nn.Module):
         self.num_classes = num_classes
         self.fc_layer = nn.Linear(self.feat_dim, self.num_classes)
         
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         feat = self.feature(x)
         feat = feat.view(feat.size(0), -1)
         out = self.fc_layer(feat)
@@ -322,7 +322,7 @@ class IR50(nn.Module):
         self.num_classes = num_classes
         self.fc_layer = nn.Linear(self.feat_dim, self.num_classes)
         
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         feat = self.feature(x)
         feat = feat.view(feat.size(0), -1)
         out = self.fc_layer(feat)
@@ -337,7 +337,7 @@ class conv3(nn.Module):
         self.fc1 = nn.Linear(2000, 50)
         self.fc2 = nn.Linear(50, num_classes)
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         x = F.relu(F.max_pool2d(self.conv1(x), 2))
         x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
         x = x.view(x.size(0), -1)

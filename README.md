@@ -58,7 +58,7 @@ We simulate the MIA scenario on three target classifiers `VGG16, IR152, FaceNet6
 
 ### Pretrain CDM
 
-We pretrain the CDM with batch size $150$ for $50\text{K}$ iterations on two A40 GPUs. Our ablation indicates that extended training iterations (e.g., $100\text{K}$) would lead to better attack performance. The pre-trained checkpoints will be saved at `./1_pretrain/logger/`.
+We pretrain the CDM with batch size 150 for 50,000 iterations on two A40 GPUs. Our ablation indicates that extended training iterations (e.g., 100,000) would lead to better attack performance. The pre-trained checkpoints will be saved at `./1_pretrain/logger/`.
 
 ```
 CUDA_VISIBLE_DEVICES=0,1 mpiexec -n 2 python 1_pretrain/free_train.py \
@@ -70,14 +70,14 @@ CUDA_VISIBLE_DEVICES=0,1 mpiexec -n 2 python 1_pretrain/free_train.py \
 
 ### Fine-tune CDM
 
-The fine-tuning stage opertates from the pretrained checkpoint. Here we set batch size to $4$ which requires around xx MB memory on a single GPU. Notably, you can trade off the attack accuracy and generative fidelity by adjusting fine-tuning epochs with `--epoch`.
+The fine-tuning stage opertates from the pretrained checkpoint with ema rate of 0.9999 (e.g., `ema_0.9999_050000.pt`). Here we set batch size to $4$ which requires around 24 GB memory on a single GPU. Notably, you can trade off the attack accuracy and generative fidelity by adjusting fine-tuning epochs and early-stop threshold with `--epoch` and `--threshold`.
 
 ```
 CUDA_VISIBLE_DEVICES=0 python 2_finetune/fintune_train.py \
     --batch_size 4 \
     --dataset celeba \
     --target VGG16 \
-    --resume_checkpoint {path of pretrained checkpoint} 
+    --resume_checkpoint {Path of pretrained checkpoint} 
 ```
 
 The fine-tuned checkpoint will be saved at `./2_finetune/logger/`. 
@@ -93,7 +93,7 @@ CUDA_VISIBLE_DEVICES=0 python 3_attack/attack.py \
     --label_num 300 \
     --repeat_times 5 \
     --batch_size 64 \
-    --path_D {path of target-specific CDM}
+    --path_D {Path of target-specific CDM}
 ```
 
 Additionally, we provide an evaluation script `./3_attack/evaluate.py` to evaluate the reconstructions of different MIA methods.

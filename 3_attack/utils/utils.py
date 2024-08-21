@@ -37,24 +37,6 @@ class Tee(object):
         self.file.flush()
 
 
-def visualize(img, path='', label='', save=True):
-    sample = ((img + 1) * 127.5).clamp(0, 255).to(torch.uint8)
-    sample = sample.permute(0, 2, 3, 1)
-    sample = sample.contiguous()
-    arr = np.array([i.cpu().numpy() for i in sample])
-    N = min(int(math.sqrt(len(arr))), 4)
-    for i in range(N*N):
-        plt.subplot(N, N, i+1)
-        plt.imshow(arr[i])
-        plt.xticks([])
-        plt.yticks([])
-    if save:
-        plt.savefig(f'./{path}/visual/batch_{label}.png')
-    else:
-        plt.show()
-    plt.close()
-
-
 def save_tensor_to_image(imgs, lables, save_path):
     fake_dataset = TensorDataset(imgs.cpu(), lables.cpu())
     for i, (x,y) in enumerate(torch.utils.data.DataLoader(fake_dataset, batch_size=1, shuffle=False)):

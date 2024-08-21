@@ -1,0 +1,7 @@
+numpy==1.26.4
+blobfile
+mpi4py
+tqdm
+kornia
+matplotlib
+timm

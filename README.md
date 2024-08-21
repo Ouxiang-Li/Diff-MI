@@ -54,7 +54,7 @@ pip install -r requirements.txt
 
 ## Step-1: Training Target-specific CDM
 
-We simulate the MIA scenario on three target classifiers `VGG16, IR152, FaceNet64` with three different public datasets `celeba, ffhq, facescrub`. Here we take **VGG16** as the target classifier and **CelebA** as the public dataset as an example to train the target-specific CDM from scratch.
+We simulate the MIA scenario on three target classifiers `VGG16, IR152, FaceNet64` with three different public datasets `celeba, ffhq, facescrub`. Here we take `VGG16` as the target classifier and `CelebA` as the public dataset as an example to train the target-specific CDM from scratch.
 
 ### Pretrain CDM
 

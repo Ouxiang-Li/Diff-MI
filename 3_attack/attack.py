@@ -25,23 +25,12 @@ from utils.utils import *
 sys.path.append(os.getcwd())
 from models.classifier import VGG16, IR152, FaceNet64, FaceNet
 
-'''
-CUDA_VISIBLE_DEVICES=5 python 3_attack/attack.py \
-    --dataset celeba \
-    --target VGG16 \
-    --label_num 300 \
-    --repeat_times 5 \
-    --batch_size 64 \
-    --ddim_step 100 \
-    --path_D /data/liox/Diff-MI_local/2_finetune/logger_formal/celeba/celeba_VGG16/ema_0.9999_050000_19_93.59%.pt
-'''
 
-# region [Configuration]
 parser = argparse.ArgumentParser()
 # Sampling Configuration
-parser.add_argument('--dataset', type=str, default='celeba')  # celeba, ffhq, facescrub
-parser.add_argument('--target', type=str, default='VGG16')  # FaceNet64, IR152, VGG16
-parser.add_argument('--path_D', type=str, default=None)
+parser.add_argument('--dataset', type=str, default='celeba', help='celeba | ffhq | facescrub')
+parser.add_argument('--target', type=str, default='VGG16', help='FaceNet64 | IR152 | VGG16')
+parser.add_argument('--path_D', type=str, default=None, required=True)
 parser.add_argument('--steps', type=int, default=30)
 parser.add_argument('--w', type=float, default=3.0)
 parser.add_argument('--ddim_step', type=int, default=100)
@@ -52,11 +41,10 @@ parser.add_argument('--aug_times', type=int, default=4)
 parser.add_argument('--k', type=int, default=20)
 parser.add_argument('--alpha', type=float, default=1.0)
 parser.add_argument('--seed', type=int, default=42)
-# Common Configuration
+# Evaluation Configuration
 parser.add_argument('--cal_fid', default=True, action='store_true')
 parser.add_argument('--cal_knn', default=True, action='store_true')
 args = parser.parse_args()
-# endregion
 
 
 def main():
@@ -91,7 +79,7 @@ def main():
 
     for i, classes in enumerate(label_dataset):
 
-        recon_imgs = iterative_image_reconstruction(args, diff_net=diff_net,  classifier=T, classes=classes, 
+        recon_imgs = Iterative_Image_Reconstruction(args, diff_net=diff_net,  classifier=T, classes=classes, 
                                                     iter=i, batch_num=batch_num, device=device,).clamp(0,1)
         PGD_kwargs = {
             'constraint':'2', 'eps': 0.5, 'step_size': 0.1, 'iterations': 10, 
@@ -125,7 +113,7 @@ def main():
         calc_knn(success_img_list, success_label_list, E=E, device=device)
 
 
-def iterative_image_reconstruction(
+def Iterative_Image_Reconstruction(
     args,
     diff_net, 
     classifier, 
@@ -164,13 +152,12 @@ def iterative_image_reconstruction(
         xt, epsilon = diffusion.sample(sample_img, t)
         t = torch.from_numpy(t).float().view(1)
         eps = diff_net(xt.float(), t.to(device), classes)
-        nonEps = diff_net(xt.float(), t.to(device), torch.ones_like(classes)*(diff_net.num_classes-1))
+        nonEps = diff_net(xt.float(), t.to(device), torch.ones_like(classes) * (diff_net.num_classes - 1))
         epsilon_pred = args.w * eps - (args.w - 1) * nonEps
 
-        # Compute diffusion loss: ||epsilon - epsilon_theta||^2 —— expression in line 5
+        # Compute diffusion loss: ||epsilon - epsilon_theta||^2
         loss = 1 * F.mse_loss(epsilon_pred, epsilon)
 
-        # Compute EMA of diffusion loss gradient norm
         opt.zero_grad()
         loss.backward()
 
@@ -183,7 +170,6 @@ def iterative_image_reconstruction(
                 norm_track = grad_norm
         opt.step()
 
-        # Evaluate attribute classifier on batch of randomly transformed inputs
         attr_input_batch = []
         for _ in range(args.aug_times):
             attr_input = model.encode()
@@ -193,9 +179,9 @@ def iterative_image_reconstruction(
         attr_input_batch = torch.cat(attr_input_batch, dim=0)
         feats, logits = classifier.forward((attr_input_batch+1)/2)
 
-        # topk loss
+        # topk loss + p_reg loss
         loss = topk_loss(logits, classes.repeat(args.aug_times), k=args.k) + \
-                    p_reg_loss(feats, classes.repeat(args.aug_times), p_reg, args.alpha)
+               args.alpha * p_reg_loss(feats, classes.repeat(args.aug_times), p_reg)
 
         opt.zero_grad()
         loss.backward()
@@ -286,10 +272,10 @@ def topk_loss(out, iden, k):
     return -1 * real.mean() + margin.mean()
 
 
-def p_reg_loss(featureT, classes, p_reg, alpha):
+def p_reg_loss(featureT, classes, p_reg):
     fea_reg = p_reg[classes]
     assert featureT.shape == fea_reg.shape
-    return alpha * F.mse_loss(featureT, fea_reg)
+    return F.mse_loss(featureT, fea_reg)
 
 
 class InferenceModel(nn.Module):

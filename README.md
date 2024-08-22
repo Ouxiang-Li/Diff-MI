@@ -84,7 +84,7 @@ The fine-tuned checkpoint will be saved at `./2_finetune/logger/`.
 
 ## Step-2: Iterative Image Reconstruction 
 
-In step-2, you can load the target-specific CDM for attack on any specific target class. Here, we reconstruct 5 images for the first 300 classes.
+In step-2, you can load the target-specific CDM for attack on any specific target class. Here, we reconstruct 5 images for the first 300 classes with bs = 64.
 
 ```
 CUDA_VISIBLE_DEVICES=0 python 3_attack/attack.py \
@@ -96,15 +96,33 @@ CUDA_VISIBLE_DEVICES=0 python 3_attack/attack.py \
     --path_D {Path of target-specific CDM}
 ```
 
-Additionally, we provide an evaluation script `./3_attack/evaluate.py` to evaluate the reconstructions of different MIA methods.
+Additionally, we provide an evaluation script `./3_attack/evaluate.py` to evaluate the reconstructions of different MIA methods regarding various metrics.
 
 ```
 CUDA_VISIBLE_DEVICES=0 python 3_attack/evaluate.py \
-    --eval_path {path of recontructed images} \
+    --eval_path {Path of recontructed images} \
     --cal_acc --cal_fid --cal_knn \
     --cal_piq --cal_lpips \
     --cal_PRCD
 ```
+
+The path of reconstructed images should be organized as follows:
+
+	```
+	Diff-MI
+	├── all_imgs
+	│   └── 0
+	│   └── 1
+	│   └── ...
+	│   └── 299
+	├── success_imgs  # optional
+	│   └── 0
+	│   └── 1
+	│   └── ...
+	│   └── 299
+	```
+
+The subfolder `success_imgs` is optional, the `evaluate.py` script can automatically perform calculations based on the `all_imgs` subfolder and save the results in the corresponding format.
 
 # Examples of Reconstructed Images
 

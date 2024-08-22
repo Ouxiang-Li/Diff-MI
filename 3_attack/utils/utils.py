@@ -20,6 +20,9 @@ from pytorch_fid.inception import InceptionV3
 from pytorch_fid.fid_score import calculate_fid_given_paths
 
 
+PRIVATE_PATH = "data/celeba_private/celeba_private_300"
+
+
 class Tee(object):
     def __init__(self, name, mode):
         self.file = open(name, mode)
@@ -78,8 +81,6 @@ def set_random_seed(seed=0):
 
 
 # region [evaluation]
-    
-PRIVATE_PATH = "data/celeba_private/celeba_private_300"
 
 def calc_acc(classifier, imgs, labels, bs=64, anno='', with_success=False, enable_print=True):
 
@@ -371,6 +372,7 @@ class PRCD:
     def SingleClassSubset(self, dataset, cls):
         indices = np.where(np.array(dataset.targets) == cls)[0]
         return Subset(dataset, indices)  
+
 
 def calc_PRCD(fake_path, real_path=PRIVATE_PATH):
 

@@ -35,7 +35,7 @@ pip install -r requirements.txt
 ### Models
 
 - **Classifiers:** You can train target models following [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) or direcly download the [pretrained checkpoints](https://drive.google.com/drive/folders/1qfoELNMY8jedL2dSDocxNCaIUkUlc8_8?usp=drive_link) and put them in `./assets/checkpoints`.
-- **Target-specific CDMs:** We additionally provide our pretrained and fine-tuned target-specific CDMs at [this https url]() for quick reproduction, including weights across three target classifiers `VGG16, IR152, FaceNet64` using three public datasets `celeba, ffhq, facescrub`.
+- **Target-specific CDMs:** We additionally provide our pretrained and fine-tuned target-specific CDMs at [this https url](https://drive.google.com/drive/folders/1pRrteE19mNpxWgxDhZd10ALFM3Sqgj8X) for quick reproduction, including weights across three target classifiers `VGG16, IR152, FaceNet64` using three public datasets `celeba, ffhq, facescrub`.
 - **Private features:** To calculate KNN Dist, we pre-compute the features of private data on the evaluation model in [this https url](https://drive.google.com/drive/folders/1X2nBz6ZNHo-6aLf-HeZ83I-XHLRvp_aL?usp=drive_link) and you should put them in `./assets/celeba_private_feats`.
 
 ### Directory structure

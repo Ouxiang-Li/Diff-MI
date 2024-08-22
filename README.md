@@ -65,31 +65,6 @@ assets
 ```
 </details>
 
-<!-- </details>
-<summary> You should organize the above data and assets as follows: </summary>
-
-```
-data
-├── celeba_private
-│   └── celeba_private_300
-├── p_reg
-│   └── celeba_VGG16_p_reg.pt
-│   └── ...
-├── reclassified_public_data
-│   └── celeba
-│   └── facescrub
-│   └── ffhq
-assets
-├── celeba_private_feats
-│   └── private_feats_mean.npy
-│   └── private_feats.npy
-│   └── private_targets.npy
-├── checkpoints
-│   └── evaluate_model
-│   └── target_model
-```
-</details> -->
-
 ## Quick Visualization
 
 To facilitate quick reproduction of our reconstructed samples, we provide a jupyter script `demo.ipynb`. You can load our pre-trained weights to quickly visualize our attack results.
@@ -150,21 +125,23 @@ CUDA_VISIBLE_DEVICES=0 python 3_attack/evaluate.py \
     --cal_PRCD
 ```
 
-The path of reconstructed images should be organized as follows:
+<details>
+<summary> The path of reconstructed images should be organized as follows: </summary>
 
-	```
-	Diff-MI
-	├── all_imgs
-	│   └── 0
-	│   └── 1
-	│   └── ...
-	│   └── 299
-	├── success_imgs  # optional
-	│   └── 0
-	│   └── 1
-	│   └── ...
-	│   └── 299
-	```
+```
+Diff-MI
+├── all_imgs
+│   └── 0
+│   └── 1
+│   └── ...
+│   └── 299
+├── success_imgs  # optional
+│   └── 0
+│   └── 1
+│   └── ...
+│   └── 299
+```
+</details>
 
 The subfolder `success_imgs` is optional, the `evaluate.py` script can automatically perform calculations based on the `all_imgs` subfolder and save the results in the corresponding format.
 

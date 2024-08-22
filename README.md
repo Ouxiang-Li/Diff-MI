@@ -38,6 +38,8 @@ pip install -r requirements.txt
 - **Target-specific CDMs:** We additionally provide our pretrained and fine-tuned target-specific CDMs at [this https url]() for quick reproduction, including weights across three target classifiers `VGG16, IR152, FaceNet64` using three public datasets `celeba, ffhq, facescrub`.
 - **Private features:** To calculate KNN Dist, we pre-compute the features of private data on the evaluation model in [this https url](https://drive.google.com/drive/folders/1X2nBz6ZNHo-6aLf-HeZ83I-XHLRvp_aL?usp=drive_link) and you should put them in `./assets/celeba_private_feats`.
 
+### Folder Tree
+
 - You should organize the above data and assets as follows:
 
 	```

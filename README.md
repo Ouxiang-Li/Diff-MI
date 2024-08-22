@@ -32,7 +32,12 @@ pip install -r requirements.txt
 
 - We pre-compute the regularization features [`p_reg`](https://drive.google.com/drive/folders/1r0-fX7R6REqtBUkC7bNmlzAnpFKCzW2B?usp=drive_link) for $\mathcal{L}_{\text{p-reg}}$.
 
-- You should organize the above data as follows:
+### Models
+
+- You can train target models following [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) or direcly download the [pretrained checkpoints](https://drive.google.com/drive/folders/1qfoELNMY8jedL2dSDocxNCaIUkUlc8_8?usp=drive_link) and put them in `./assets/checkpoints`.
+- To calculate KNN Dist, we pre-compute the features of private data on the evaluation model in [this https url](https://drive.google.com/drive/folders/1X2nBz6ZNHo-6aLf-HeZ83I-XHLRvp_aL?usp=drive_link) and you should put them in `./assets/celeba_private_feats`.
+
+You should organize the above data as follows:
 
 	```
 	data
@@ -45,12 +50,15 @@ pip install -r requirements.txt
 	│   └── celeba
 	│   └── facescrub
 	│   └── ffhq
+	assets
+	├── celeba_private_feats
+	│   └── private_feats_mean.npy
+	│   └── private_feats.npy
+	│   └── private_targets.npy
+	├── checkpoints
+	│   └── evaluate_model
+	│   └── target_model
 	```
-
-### Models
-
-- You can train target models following [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) or direcly download the [pretrained checkpoints](https://drive.google.com/drive/folders/1qfoELNMY8jedL2dSDocxNCaIUkUlc8_8?usp=drive_link) and put them in `./assets/checkpoints`.
-- To calculate KNN Dist, we pre-compute the features of private data on the evaluation model in [this https url](https://drive.google.com/drive/folders/1X2nBz6ZNHo-6aLf-HeZ83I-XHLRvp_aL?usp=drive_link) and you should put them in `./assets/celeba_private_feats`.
 
 ## Quick Visualization
 

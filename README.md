@@ -49,8 +49,8 @@ pip install -r requirements.txt
 
 ### Models
 
-- You can train target models following [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) or direcly download the provided checkpoints at: https://drive.google.com/drive/folders/1qfoELNMY8jedL2dSDocxNCaIUkUlc8_8?usp=drive_link and put them in `./assets/checkpoints`.
-- To calculate KNN Dist, we pre-compute the features of private data on the evaluation model. You can download at: https://drive.google.com/drive/folders/1X2nBz6ZNHo-6aLf-HeZ83I-XHLRvp_aL?usp=drive_link and put them in `./assets/celeba_private_feats`.
+- You can train target models following [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) or direcly download [the pretrained checkpoints](https://drive.google.com/drive/folders/1qfoELNMY8jedL2dSDocxNCaIUkUlc8_8?usp=drive_link) and put them in `./assets/checkpoints`.
+- To calculate KNN Dist, we pre-compute the features of private data on the evaluation model in [this https url](https://drive.google.com/drive/folders/1X2nBz6ZNHo-6aLf-HeZ83I-XHLRvp_aL?usp=drive_link) and you should put them in `./assets/celeba_private_feats`.
 
 ## Quick Visualization
 

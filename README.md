@@ -52,6 +52,12 @@ pip install -r requirements.txt
 - You can train target models following [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) or direcly download the provided checkpoints at: https://drive.google.com/drive/folders/1qfoELNMY8jedL2dSDocxNCaIUkUlc8_8?usp=drive_link and put them in `./assets/checkpoints`.
 - To calculate KNN Dist, we pre-compute the features of private data on the evaluation model. You can download at: https://drive.google.com/drive/folders/1X2nBz6ZNHo-6aLf-HeZ83I-XHLRvp_aL?usp=drive_link and put them in `./assets/celeba_private_feats`.
 
+## Quick Visualization
+
+To facilitate quick reproduction of our reconstructed samples, we provide a jupyter script `demo.ipynb`. You can load our pre-trained weights to quickly visualize our attack results.
+
+![fig_vis](assets/fig_vis.jpg)
+
 ## Step-1: Training Target-specific CDM
 
 We simulate the MIA scenario on three target classifiers `VGG16, IR152, FaceNet64` with three different public datasets `celeba, ffhq, facescrub`. Here we take `VGG16` as the target classifier and `CelebA` as the public dataset as an example to train the target-specific CDM from scratch.

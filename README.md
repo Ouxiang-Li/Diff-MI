@@ -20,6 +20,7 @@ conda activate Diff-MI
 pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 --extra-index-url https://download.pytorch.org/whl/cu117
 # install other dependencies
 pip install -r requirements.txt
+bash conda_package_modifier.sh
 ```
 
 ## Preparation

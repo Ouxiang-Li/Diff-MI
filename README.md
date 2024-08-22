@@ -38,30 +38,32 @@ pip install -r requirements.txt
 - **Target-specific CDMs:** We additionally provide our pretrained and fine-tuned target-specific CDMs at [this https url]() for quick reproduction, including weights across three target classifiers `VGG16, IR152, FaceNet64` using three public datasets `celeba, ffhq, facescrub`.
 - **Private features:** To calculate KNN Dist, we pre-compute the features of private data on the evaluation model in [this https url](https://drive.google.com/drive/folders/1X2nBz6ZNHo-6aLf-HeZ83I-XHLRvp_aL?usp=drive_link) and you should put them in `./assets/celeba_private_feats`.
 
-### Folder Tree
+### Directory structure
 
-- You should organize the above data and assets as follows:
+</details>
+<summary> You should organize the above data and assets as follows: </summary>
 
-	```
-	data
-	├── celeba_private
-	│   └── celeba_private_300
-	├── p_reg
-	│   └── celeba_VGG16_p_reg.pt
-	│   └── ...
-	├── reclassified_public_data
-	│   └── celeba
-	│   └── facescrub
-	│   └── ffhq
-	assets
-	├── celeba_private_feats
-	│   └── private_feats_mean.npy
-	│   └── private_feats.npy
-	│   └── private_targets.npy
-	├── checkpoints
-	│   └── evaluate_model
-	│   └── target_model
-	```
+```
+data
+├── celeba_private
+│   └── celeba_private_300
+├── p_reg
+│   └── celeba_VGG16_p_reg.pt
+│   └── ...
+├── reclassified_public_data
+│   └── celeba
+│   └── facescrub
+│   └── ffhq
+assets
+├── celeba_private_feats
+│   └── private_feats_mean.npy
+│   └── private_feats.npy
+│   └── private_targets.npy
+├── checkpoints
+│   └── evaluate_model
+│   └── target_model
+```
+</details>
 
 ## Quick Visualization
 

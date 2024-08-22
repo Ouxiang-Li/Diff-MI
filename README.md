@@ -44,55 +44,24 @@ pip install -r requirements.txt
 <summary> You should organize the above data as follows: </summary>
 
 ```
-data/datasets
-|-- train_ForenSynths
-|   |-- train
-|   |   |-- car
-|   |   |-- cat
-|   |   |-- chair
-|   |   |-- horse
-|   |-- val
-|   |   |-- car
-|   |   |-- cat
-|   |   |-- chair
-|   |   |-- horse
-|-- test1_ForenSynths/test
-|   |-- biggan
-|   |-- cyclegan
-|   |-- deepfake
-|   |-- gaugan
-|   |-- progan
-|   |-- stargan
-|   |-- stylegan
-|   |-- stylegan2
-|-- test2_Self-Synthesis/test
-|   |-- AttGAN
-|   |-- BEGAN
-|   |-- CramerGAN
-|   |-- InfoMaxGAN
-|   |-- MMDGAN
-|   |-- RelGAN
-|   |-- S3GAN
-|   |-- SNGAN
-|   |-- STGAN
-|-- test3_Ojha/test
-|   |-- dalle
-|   |-- glide_100_10
-|   |-- glide_100_27
-|   |-- glide_50_27
-|   |-- guided          # Also known as ADM.
-|   |-- ldm_100
-|   |-- ldm_200
-|   |-- ldm_200_cfg
-|-- test4_GenImage/test
-|   |-- ADM
-|   |-- BigGAN
-|   |-- Glide
-|   |-- Midjourney
-|   |-- stable_diffusion_v_1_4
-|   |-- stable_diffusion_v_1_5
-|   |-- VQDM
-|   |-- wukong
+data
+├── celeba_private
+│   └── celeba_private_300
+├── p_reg
+│   └── celeba_VGG16_p_reg.pt
+│   └── ...
+├── reclassified_public_data
+│   └── celeba
+│   └── facescrub
+│   └── ffhq
+assets
+├── celeba_private_feats
+│   └── private_feats_mean.npy
+│   └── private_feats.npy
+│   └── private_targets.npy
+├── checkpoints
+│   └── evaluate_model
+│   └── target_model
 ```
 </details>
 

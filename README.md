@@ -56,7 +56,7 @@ pip install -r requirements.txt
 
 To facilitate quick reproduction of our reconstructed samples, we provide a jupyter script `demo.ipynb`. You can load our pre-trained weights to quickly visualize our attack results.
 
-![fig_vis](assets/fig_vis.jpg)
+![fig_vis](assets/fig_vis.png)
 
 ## Step-1: Training Target-specific CDM
 

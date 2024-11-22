@@ -36,7 +36,7 @@ bash conda_package_modifier.sh
 ### Models
 
 - **Classifiers:** You can train target models following [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) or direcly download the [`pretrained checkpoints`](https://rec.ustc.edu.cn/share/1e599810-a59a-11ef-98d3-bd2067401b0b) and put them in `./assets/checkpoints`.
-- **Target-specific CDMs:** We additionally provide our pretrained and fine-tuned [`target-specific CDMs`]https://rec.ustc.edu.cn/share/3ebec270-a59a-11ef-ab84-5d8f154cfc23) for quick reproduction, including weights across three target classifiers `VGG16, IR152, FaceNet64` using three public datasets `celeba, ffhq, facescrub`.
+- **Target-specific CDMs:** We additionally provide our pretrained and fine-tuned [`target-specific CDMs`](https://rec.ustc.edu.cn/share/3ebec270-a59a-11ef-ab84-5d8f154cfc23) for quick reproduction, including weights across three target classifiers `VGG16, IR152, FaceNet64` using three public datasets `celeba, ffhq, facescrub`.
 - **Private features:** To calculate KNN Dist, we pre-compute [`private features`](https://rec.ustc.edu.cn/share/584b52a0-a59a-11ef-bdeb-bde5488ecd8a) on the evaluation model in and you should put them in `./assets/celeba_private_feats`.
 
 ### Directory structure

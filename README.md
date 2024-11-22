@@ -17,7 +17,7 @@ Install the environment as follows:
 conda create -n Diff-MI -y python=3.9
 conda activate Diff-MI
 # install pytorch 
-pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 --extra-index-url https://download.pytorch.org/whl/cu117
+pip install torch==1.13.1 torchvision==0.14.1
 # install other dependencies
 pip install -r requirements.txt
 bash conda_package_modifier.sh
@@ -35,9 +35,9 @@ bash conda_package_modifier.sh
 
 ### Models
 
-- **Classifiers:** You can train target models following [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) or direcly download the [pretrained checkpoints](https://rec.ustc.edu.cn/share/1e599810-a59a-11ef-98d3-bd2067401b0b) and put them in `./assets/checkpoints`.
-- **Target-specific CDMs:** We additionally provide our pretrained and fine-tuned target-specific CDMs at [this https url](https://rec.ustc.edu.cn/share/3ebec270-a59a-11ef-ab84-5d8f154cfc23) for quick reproduction, including weights across three target classifiers `VGG16, IR152, FaceNet64` using three public datasets `celeba, ffhq, facescrub`.
-- **Private features:** To calculate KNN Dist, we pre-compute the features of private data on the evaluation model in [this https url](https://rec.ustc.edu.cn/share/584b52a0-a59a-11ef-bdeb-bde5488ecd8a) and you should put them in `./assets/celeba_private_feats`.
+- **Classifiers:** You can train target models following [KED-MI](https://github.com/SCccc21/Knowledge-Enriched-DMI/) or direcly download the [`pretrained checkpoints`](https://rec.ustc.edu.cn/share/1e599810-a59a-11ef-98d3-bd2067401b0b) and put them in `./assets/checkpoints`.
+- **Target-specific CDMs:** We additionally provide our pretrained and fine-tuned [`target-specific CDMs`]https://rec.ustc.edu.cn/share/3ebec270-a59a-11ef-ab84-5d8f154cfc23) for quick reproduction, including weights across three target classifiers `VGG16, IR152, FaceNet64` using three public datasets `celeba, ffhq, facescrub`.
+- **Private features:** To calculate KNN Dist, we pre-compute [`private features`](https://rec.ustc.edu.cn/share/584b52a0-a59a-11ef-bdeb-bde5488ecd8a) on the evaluation model in and you should put them in `./assets/celeba_private_feats`.
 
 ### Directory structure
 
@@ -72,7 +72,7 @@ To facilitate quick reproduction of our reconstructed samples, we provide a jupy
 
 ![fig_vis](assets/fig_vis.png)
 
-## Step-1: Training Target-specific CDM
+## Step-1: Training Target-Specific CDM
 
 We simulate the MIA scenario on three target classifiers `VGG16, IR152, FaceNet64` with three different public datasets `celeba, ffhq, facescrub`. Here we take `VGG16` as the target classifier and `CelebA` as the public dataset as an example to train the target-specific CDM from scratch.
 
@@ -146,11 +146,11 @@ Diff-MI
 
 The subfolder `success_imgs` is optional, the `evaluate.py` script can automatically perform calculations based on the `all_imgs` subfolder and save the results in the corresponding format.
 
-# Examples of Reconstructed Images
+## Examples of Reconstructed Images
 
 ![fig2](assets/fig2.jpg)
 
-# Citing
+## Citing
 If you find this repository useful for your work, please consider citing it as follows:
 ```
 @article{li2024model,
